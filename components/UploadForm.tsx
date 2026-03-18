@@ -27,6 +27,7 @@ import VoiceSelector from "./VoiceSelector";
 import LoadingOverlay from "./LoadingOverlay";
 import {
   checkBookExists,
+  connectToMongoDB,
   createBook,
   saveBookSegments,
 } from "@/lib/actions/book.actions";
@@ -72,7 +73,6 @@ const UploadForm = () => {
         return;
       }
 
-      const fileTitle = data.title.replace(/\s+/g, "-").toLowerCase();
       const pdfFile = data.pdfFile;
 
       const parsedPDF = await parsePDFFile(pdfFile);
@@ -83,6 +83,8 @@ const UploadForm = () => {
         );
         return;
       }
+
+      const fileTitle = data.title.replace(/\s+/g, "-").toLowerCase();
 
       const uploadedPdfBlob = await upload(fileTitle, pdfFile, {
         access: "public",
@@ -103,6 +105,7 @@ const UploadForm = () => {
             contentType: coverFile.type,
           },
         );
+
         coverUrl = uploadedCoverBlob.url;
       } else {
         const response = await fetch(parsedPDF.cover);
@@ -163,6 +166,18 @@ const UploadForm = () => {
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    const connectionToDB = async () => {
+      try {
+        await connectToMongoDB();
+      } catch (err) {
+        console.error("Error occurred -", err);
+      }
+    };
+
+    connectionToDB();
+  }, []);
 
   if (!isMounted) return null;
 
