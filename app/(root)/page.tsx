@@ -2,6 +2,7 @@ import HeroSection from "@/components/HeroSection";
 import BookCard from "@/components/BookCard";
 import Search from "@/components/Search";
 import { getAllBooks } from "@/lib/actions/book.actions";
+import { Suspense } from "react";
 
 export default async function Home() {
   const bookResult = await getAllBooks();
@@ -15,7 +16,9 @@ export default async function Home() {
         <h2 className="text-3xl font-serif font-bold text-[#212a3b]">
           Recent Books
         </h2>
-        <Search />
+        <Suspense fallback={null}>
+          <Search />
+        </Suspense>
       </div>
 
       <div className="library-books-grid">
