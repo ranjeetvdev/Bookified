@@ -4,6 +4,8 @@ import Search from "@/components/Search";
 import { getAllBooks } from "@/lib/actions/book.actions";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic"; // WHich is always going to force a new fetch of the books
+
 export default async function Home() {
   const bookResult = await getAllBooks();
   const books = bookResult.success ? (bookResult.data ?? []) : [];

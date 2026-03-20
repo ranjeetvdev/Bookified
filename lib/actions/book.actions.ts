@@ -1,12 +1,15 @@
 "use server";
 
 import mongoose from "mongoose";
+import { revalidatePath } from "next/cache";
 
 import { CreateBook, TextSegment } from "@/types";
 import { connectToDatabase } from "@/database/mongoose";
 import { escapeRegex, generateSlug, serializeData } from "@/lib/utils";
 import Book from "@/database/models/book.model";
 import BookSegment from "@/database/models/book-segment.model";
+
+revalidatePath("/");
 
 export const getAllBooks = async (search?: string) => {
   try {
@@ -119,6 +122,8 @@ export const createBook = async (data: CreateBook) => {
       totalSegments: 0,
     });
 
+    revalidatePath("/");
+
     return {
       success: true,
       data: serializeData(book),
@@ -230,6 +235,13 @@ export const searchBookSegments = async (
     if (segments.length === 0) {
       const keywords = query.split(/\s+/).filter((k) => k.length > 2);
       const pattern = keywords.map(escapeRegex).join("|");
+
+      if (keywords.length === 0) {
+        return {
+          success: true,
+          data: [],
+        };
+      }
 
       segments = await BookSegment.find({
         bookId: bookObjectId,
