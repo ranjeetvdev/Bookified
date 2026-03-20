@@ -9,7 +9,6 @@ import { escapeRegex, generateSlug, serializeData } from "@/lib/utils";
 import Book from "@/database/models/book.model";
 import BookSegment from "@/database/models/book-segment.model";
 
-revalidatePath("/");
 
 export const getAllBooks = async (search?: string) => {
   try {
