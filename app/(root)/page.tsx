@@ -29,17 +29,30 @@ export default async function Home({
         </Suspense>
       </div>
 
-      <div className="library-books-grid">
-        {books.map(({ _id, title, author, coverURL, slug }) => (
-          <BookCard
-            key={_id}
-            title={title}
-            author={author}
-            coverURL={coverURL}
-            slug={slug}
-          />
-        ))}
-      </div>
+      {books.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <h3 className="text-2xl font-semibold text-[#212a3b]">
+            No books found
+          </h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {query
+              ? `No results for "${query}". Try a different title or author.`
+              : "There are no books available at the moment."}
+          </p>
+        </div>
+      ) : (
+        <div className="library-books-grid">
+          {books.map(({ _id, title, author, coverURL, slug }) => (
+            <BookCard
+              key={_id}
+              title={title}
+              author={author}
+              coverURL={coverURL}
+              slug={slug}
+            />
+          ))}
+        </div>
+      )}
     </main>
   );
 }
